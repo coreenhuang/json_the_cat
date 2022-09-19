@@ -2,32 +2,34 @@ const request = require('request');
 
 const generalURL = "https://api.thecatapi.com/v1/breeds/search?q=";
 
-const breedFetcher = (breed) => {
+const fetchBreedDescription = (breed, callback) => {
 
   const fullURL = generalURL + breed;
 
   request(fullURL, (error, response, body) => {
 
     if (error) {
-      console.log("Error: ", error);
+      callback("Error: ", null);
     }
 
     if (Number(response.statusCode) > 299) {
-      console.log("Status code error: ", response.statusCode);
+      callback("Error: ", null);
     }
 
     if (!body) {
-      console.log("No information on this breed.");
+      callback("No information on this breed.", null);
     }
 
     const data = JSON.parse(body);
     const breedInfo = data[0]['description'];
 
     if (breedInfo) (
-      console.log(breedInfo)
+      callback(null, breedInfo)
     );
 
   });
 };
 
-breedFetcher('Siberian');
+// fetchBreedDescription('Siberian');
+
+module.exports = { fetchBreedDescription };
